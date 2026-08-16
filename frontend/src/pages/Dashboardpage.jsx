@@ -5,20 +5,17 @@ import TopNavbar from "../Components/TopNavbar";
 import { LuUsers, LuClock, LuActivity } from "react-icons/lu"; // Icons for activity logs
 import { getrecentActivityLogs } from "../features/activitySlice";
 import FormattedTime from "../lib/FormattedTime ";
-import { io } from "socket.io-client";
+import { createSocket } from "../lib/socket";
 
 function Dashboardpage() {
   const { staffuser, manageruser, adminuser } = useSelector((state) => state.auth);
   const { recentuser } = useSelector((state) => state.activity);
   const dispatch = useDispatch();
 
-  const socket = io("https://advanced-inventory-management-system-v1.onrender.com", {
-    withCredentials: true,
-    transports: ["websocket", "polling"],
-  });
-
   useEffect(() => {
     dispatch(getrecentActivityLogs());
+
+    const socket = createSocket();
 
     // Listen for new activity logs
     socket.on("newActivityLog", (newLog) => {
@@ -27,9 +24,10 @@ function Dashboardpage() {
     });
 
     return () => {
-      socket.off("newActivityLog"); // Clean up the listener
+      socket.off("newActivityLog");
+      socket.disconnect();
     };
-  }, [dispatch, socket]);
+  }, [dispatch]);
 
   return (
     <div className="bg-base-100">

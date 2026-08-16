@@ -5,7 +5,7 @@ import { MdClose } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import image from "../images/user.png";
 import { createNotification, getAllNotifications, deleteNotification } from "../features/notificationSlice"; 
-import { io } from "socket.io-client";
+import { createSocket } from "../lib/socket";
 import toast from 'react-hot-toast';
 import FormattedTime from "../lib/FormattedTime ";
 
@@ -16,14 +16,9 @@ function NotificationPage() {
   const [name, setName] = useState("");
   const [type, setType] = useState("");
   const [isFormVisible, setIsFormVisible] = useState(false);
-  const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    const newSocket = io("https://advanced-inventory-management-system-v1.onrender.com", {
-      withCredentials: true,
-      transports: ["websocket", "polling"],
-    });
-    setSocket(newSocket);
+    const newSocket = createSocket();
 
     dispatch(getAllNotifications());
 
@@ -55,6 +50,7 @@ function NotificationPage() {
     });
 
     return () => {
+      newSocket.off("newNotification");
       newSocket.disconnect();
     };
   }, [dispatch, Authuser?.ProfilePic]);

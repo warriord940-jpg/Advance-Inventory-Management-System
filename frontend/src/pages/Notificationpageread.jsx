@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllNotifications } from "../features/notificationSlice"; 
-import { io } from "socket.io-client";
+import { createSocket } from "../lib/socket";
 import FormattedTime from "../lib/FormattedTime ";
 import image from "../images/user.png";
 import TopNavbar from "../Components/TopNavbar";
@@ -12,10 +12,7 @@ function NotificationPageRead() {
 
   useEffect(() => {
 
-    const socket = io("https://advanced-inventory-management-system-v1.onrender.com", {
-      withCredentials: true,
-      transports: ["websocket", "polling"],
-    });
+    const socket = createSocket();
 
 
     dispatch(getAllNotifications());
@@ -26,6 +23,7 @@ function NotificationPageRead() {
     });
 
     return () => {
+      socket.off("newNotification");
       socket.disconnect();
     };
   }, [dispatch]);
