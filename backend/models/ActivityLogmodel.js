@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const logger=require('../libs/logger')
 
 
 const ActivityLogSchema = new mongoose.Schema(

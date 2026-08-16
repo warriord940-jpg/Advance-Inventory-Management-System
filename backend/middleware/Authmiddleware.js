@@ -3,16 +3,22 @@ const jwt=require('jsonwebtoken')
 const User=require('../models/Usermodel')
 require('dotenv').config();
 
+const jwtSecret = process.env.JWT_SECRET || process.env.SecretKey || "default_jwt_secret_key";
+
 module.exports.authmiddleware = async (req, res, next) => {
   try {
-    const token = req.cookies.Inventorymanagmentsystem;
+    const authorization = req.get("authorization");
+    const bearerToken = authorization?.startsWith("Bearer ")
+      ? authorization.slice(7)
+      : null;
+    const token = req.cookies.Inventorymanagmentsystem || bearerToken;
 
     if (!token) {
       return res.status(401).json({ message: "Unauthorized: No token provided." });
     }
 
  
-    const decodedToken = jwt.verify(token, process.env.SecretKey);
+    const decodedToken = jwt.verify(token, jwtSecret);
 
     
 

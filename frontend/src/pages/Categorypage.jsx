@@ -194,39 +194,38 @@ function Categorypage() {
 
         <div className="mt-10">
           <h2 className="text-xl ml-10 font-semibold mb-4">Category List</h2>
-          <div className="overflow-x-auto">
-            <table className="min-w-full ml-10 bg-base-100 bg-white border mb-24 border-gray-200 rounded-lg shadow-md">
-              <thead className="bg-gray-100">
+          <div className="overflow-x-auto glass-panel rounded-lg mt-6 ml-10 mr-10">
+            <table className="min-w-full text-left border-collapse border-b border-gray-300">
+              <thead className="bg-gray-200">
                 <tr>
-                <th className="px-3 py-2 bg-base-100 border w-5">#</th>
-                  <th className="px-3 py-2 bg-base-100 border">Name</th>
-                  <th className="px-3 py-2 bg-base-100 border">Total Product</th>
-                  <th className="px-3 py-2 bg-base-100 border">Description</th>
-                  <th className="px-3 py-2 bg-base-100 border">Created At</th>
-                  <th className="px-3 py-2 bg-base-100 w-72 border">Operations</th>
+                  <th className="px-3 py-2 border text-white">#</th>
+                  <th className="px-3 py-2 border text-white">Name</th>
+                  <th className="px-3 py-2 border text-white">Total Product</th>
+                  <th className="px-3 py-2 border text-white">Description</th>
+                  <th className="px-3 py-2 border text-white">Created At</th>
+                  <th className="px-3 py-2 border text-white w-72">Operations</th>
                 </tr>
               </thead>
-              <tbody className='bg-base-100'>
+              <tbody className='bg-gray-100'>
                 {Array.isArray(displayCategory) &&
                 displayCategory.length > 0 ? (
                   displayCategory.map((Category,index) => (
                     <tr key={Category._id} className="">
-                       <td className="px-3 py-2 border">{index+1}</td>
-                      <td className="px-3 py-2 border">{Category.name}</td>
-                      <td className="px-3 py-2 border">
+                      <td className="px-3 py-2 border text-white">{index+1}</td>
+                      <td className="px-3 py-2 border text-white">{Category.name}</td>
+                      <td className="px-3 py-2 border text-white">
                         {Category.productCount}
                       </td>
-                      <td className="px-3 py-2 border">
+                      <td className="px-3 py-2 border text-white">
                         {Category.description}
                       </td>
-                      <td className="px-3 py-2 border">
+                      <td className="px-3 py-2 border text-white">
                         <FormattedTime timestamp={Category.createdAt}/>
                       </td>
 
-                      <td className="px-4  py-2 border">
+                      <td className="px-4  py-2 border text-white">
                         <button
                           onClick={() => handleremove(Category._id)}
-                         
                           className="h-10 w-24 bg-red-500 hover:bg-red-700 rounded-md text-white"
                         >
                           Remove
@@ -242,7 +241,7 @@ function Categorypage() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="5" className="text-center bg-base-100 py-4">
+                    <td colSpan="5" className="text-center bg-gray-100 py-4 text-white">
                       No Category found.
                     </td>
                   </tr>
@@ -257,3 +256,4 @@ function Categorypage() {
 }
 
 export default Categorypage
+

@@ -39,7 +39,7 @@ module.exports.signup = async (req, res) => {
    
 
 
-    res.status(201).json({
+    return res.status(201).json({
       message: "Signup successful",
       savedUser: {
         id: savedUser._id,
@@ -75,11 +75,16 @@ module.exports.login=async(req,res)=>{
         
      const {email,password}=req.body;
      const ipAddress = req.ip; 
+
+     if (!email || !password) {
+       return res.status(400).json({ message: "Email and password are required" });
+     }
+
      const duplicatedUser=await User.findOne({email})
 
      if(!duplicatedUser){
 
-   return res.status(400).json({error:"No user found"})
+   return res.status(401).json({message:"No user found with this email"})
      }
 
 
@@ -87,7 +92,7 @@ module.exports.login=async(req,res)=>{
 
 
       if(!hasedpassword){
-            return res.status(400).json({message:'Invalid credentials'})
+            return res.status(401).json({message:'Invalid email or password'})
         }
 
         const token=await generateToken(duplicatedUser,res)
@@ -104,7 +109,7 @@ module.exports.login=async(req,res)=>{
       userId: duplicatedUser._id, 
       ipAddress: ipAddress,
     });
-   return res.status(201).json({
+   return res.status(200).json({
     message:"login successfully",
     user:{
         id:duplicatedUser.id,
@@ -120,8 +125,9 @@ module.exports.login=async(req,res)=>{
 
 
     } catch (error) {
-  res.status(400).json({
-    error:"Error in login to the page"
+  console.error("Login error:", error.message);
+  res.status(500).json({
+    message:"Unable to sign in. Please try again."
   })
 
         

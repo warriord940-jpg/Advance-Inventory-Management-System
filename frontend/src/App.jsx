@@ -1,7 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
-import Navbar from "./Components/Navbar";
-import Footer from "./Components/Footer";
 import SignupPage from "./pages/SignupPages";
 import ServicePage from "./pages/ServicePage";
 import LoginPage from "./pages/LoginPage";
@@ -21,12 +19,27 @@ import Dashboardpage from "./pages/Dashboardpage";
 import Userstatus from "./pages/Userstatus";
 import NotificationPageRead from "./pages/Notificationpageread"
 import ProtectedRoute from "./lib/ProtectedRoute";
-import toast, { Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
     <Router>
-      <div>
+      <div className="relative isolate min-h-screen overflow-hidden bg-transparent">
+        <video
+          className="pointer-events-none fixed inset-0 h-full w-full object-cover"
+          style={{ zIndex: -1 }}
+          autoPlay
+          loop
+          muted
+          playsInline
+        >
+          <source src="https://assets.mixkit.co/videos/preview/mixkit-shelves-full-of-boxes-in-a-warehouse-42907-large.mp4" type="video/mp4" />
+        </video>
+        <div
+          className="pointer-events-none fixed inset-0"
+          style={{ backgroundColor: "rgba(15, 23, 42, 0.45)", zIndex: 0 }}
+        />
+        <div className="relative z-10 bg-transparent">
         <Toaster />
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -168,6 +181,7 @@ function App() {
             />
           </Route>
         </Routes>
+        </div>
       </div>
     </Router>
   );

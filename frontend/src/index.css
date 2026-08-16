@@ -2,3 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
+#root, main, section, div[class*="min-h-screen"] {
+  background-color: transparent !important;
+}
+
+body {
+  background: linear-gradient(-45deg, #0f172a, #1e1b4b, #0f172a, #172554) !important;
+  background-size: 400% 400% !important;
+  animation: gradientShift 15s ease infinite !important;
+  margin: 0;
+  min-height: 100vh;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+/* Glassmorphism card styling for tables and stats */
+.glass-panel {
+  background-color: rgba(15, 23, 42, 0.65) !important;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Custom scrollbar cleanup */
+::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}

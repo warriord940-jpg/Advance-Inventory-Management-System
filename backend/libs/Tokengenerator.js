@@ -5,23 +5,19 @@ require('dotenv').config();
 
 const generateToken = async (user, res) => {
   try {
-    if (!process.env.SecretKey) {
-      throw new Error("Secret key is not defined in the environment variables.");
-    }
+    const secretKey = process.env.JWT_SECRET || process.env.SecretKey || "default_jwt_secret_key";
 
     const token = jwt.sign(
       { userId: user._id, role: user.role },
-      process.env.SecretKey,
+      secretKey,
       { expiresIn: '7d' }
     );
-
-    console.log("Generated JWT:", token); 
 
     res.cookie("Inventorymanagmentsystem", token, {
       maxAge: 7 * 24 * 60 * 60 * 1000,
       httpOnly: true,
-      sameSite: 'None',
-      secure: true,
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      secure: process.env.NODE_ENV === "production",
     });
     
 

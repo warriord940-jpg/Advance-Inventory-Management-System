@@ -21,12 +21,16 @@ const initialState={
 
 export const Addproduct=createAsyncThunk('product/addproduct',async(product,{rejectWithValue})=>{
     try {
-       const response=await axiosInstance.post("product/addproduct",product,{ withCredentials: true,})
+       const token = localStorage.getItem("token");
+       const response=await axiosInstance.post("product/addproduct",product,{
+         withCredentials: true,
+         headers: token ? { Authorization: `Bearer ${token}` } : {},
+       })
        return response.data;
   
       
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Product adding failed");
+      return rejectWithValue(error.response?.data?.message || error.response?.data?.error || "Product adding failed");
     }
   })
 

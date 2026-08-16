@@ -1,16 +1,15 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch, useSelector } from "react-redux";
 import * as yup from "yup";
 import { login } from '../features/authSlice'; 
-import homeImage from '../images/welcomeimage.webp'
 
 function LoginPage() {
-  const { Authuser, isUserLogin } = useSelector((state) => state.auth);
+  const { isUserLogin } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-const navigator=useNavigate()
+  const navigate = useNavigate();
   const schema = yup.object().shape({
     email: yup.string().email("Invalid email").required("Email is required"),
     password: yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
@@ -24,35 +23,21 @@ const navigator=useNavigate()
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data) => {
-    console.log("Form Submitted:", data);
-    dispatch(login(data))
-    .then(()=>{
-    
-      navigator('/ManagerDashboard')
-      if(Authuser.user.role==="staff"){
-        navigator('/StaffDashboard')
-      } 
-      else if(Authuser.user.role=="admin"){
-        navigator('/AdminDashboard')
-      }
-      else{
-        navigator('/ManagerDashboard')
-      }
+  const onSubmit = async (data) => {
+    try {
+      const result = await dispatch(login(data)).unwrap();
+      const role = result.user?.role;
+      const dashboardPath = role === "staff"
+        ? "/StaffDashboard"
+        : role === "admin"
+          ? "/AdminDashboard"
+          : "/ManagerDashboard";
 
-
-    }) 
-    .catch((error) => {
-    
-      console.error("Error in Login:", error);
-    });
-  };
-
-  useEffect(() => {
-    if (Authuser) {
-      
+      navigate(dashboardPath, { replace: true });
+    } catch (error) {
+      console.error("Authentication error:", error);
     }
-  }, [Authuser]);
+  };
 
   return (
     <div className="min-h-screen bg-base-100 flex bg-gray-50 min-h-screen">
@@ -93,9 +78,10 @@ const navigator=useNavigate()
 
             <button
               type="submit"
+              disabled={isUserLogin}
               className="w-full bg-blue-600 text-white p-3 rounded-md hover:bg-blue-700 transition duration-300"
             >
-              Sign in
+              {isUserLogin ? "Signing in..." : "Sign in"}
             </button>
           </form>
 

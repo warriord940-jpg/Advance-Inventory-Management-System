@@ -11,6 +11,7 @@ module.exports.createCategory = async (req, res) => {
         const ipAddress=req.ip
 
         if (!name || !description) {
+            console.warn("Category validation failed: name and description are required");
             return res.status(400).json({ message: "Please provide all necessary information." });
         }
 
@@ -36,6 +37,7 @@ module.exports.createCategory = async (req, res) => {
         res.status(201).json(newCategory);
 
     } catch (error) {
+        console.error("Error creating category:", error);
         res.status(500).json({ message: "Error in creating Category", error: error.message });
     }
 };

@@ -13,6 +13,7 @@ module.exports.Addproduct=async(req,res)=>{
    
      
         if (!name|| !Category || !  Desciption|| !Price || !quantity) {
+           console.warn("Product validation failed: required product fields are missing");
            return res.status(400).json({ error: "Please provide all product details." });
         }
 
@@ -35,10 +36,11 @@ module.exports.Addproduct=async(req,res)=>{
         })
      
      
-        res.status(201).json({ message: "Product created successfully" });
+        res.status(201).json(createdProduct);
      
      } catch (error) {
         
+        console.error("Error creating product:", error);
         res.status(500).json({ message: "Error in creating product", error: error.message });
      }
     }  

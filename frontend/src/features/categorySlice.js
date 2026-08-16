@@ -15,7 +15,11 @@ export const CreateCategory = createAsyncThunk(
   'category/createcategory',
   async (Category, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post("category/createcategory", Category, { withCredentials: true });
+      const token = localStorage.getItem("token");
+      const response = await axiosInstance.post("category/createcategory", Category, {
+        withCredentials: true,
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Category creation failed");

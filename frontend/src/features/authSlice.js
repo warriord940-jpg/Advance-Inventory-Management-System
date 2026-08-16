@@ -38,7 +38,11 @@ export const login = createAsyncThunk(
       localStorage.setItem("token", response.data.user.token); 
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Login failed");
+      return rejectWithValue(
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        "Login failed"
+      );
     }
   }
 );
@@ -167,7 +171,7 @@ const authSlice = createSlice({
       .addCase(signup.fulfilled, (state, action) => {
         state.isUserSignup = false;
         state.Authuser = action.payload.savedUser; 
-        state.token = action.payload.token; 
+        state.token = action.payload.savedUser.token;
 
       })
       .addCase(signup.rejected, (state, action) => {
@@ -182,7 +186,7 @@ const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.isUserLogin = false;
         state.Authuser = action.payload.user; 
-        state.token = action.payload.token; 
+        state.token = action.payload.user.token;
  
       })
       .addCase(login.rejected, (state, action) => {

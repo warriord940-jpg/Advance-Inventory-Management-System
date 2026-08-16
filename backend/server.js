@@ -1,9 +1,11 @@
+require("dotenv").config();
 const express = require("express");
 const { MongoDBconfig } = require('./libs/mongoconfig');
 const { Server } = require("socket.io");
 const http = require("http");
 const cors = require('cors');
 const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
 const authrouter = require('./Routers/authRouther');
 const productrouter = require('./Routers/ProductRouter');
 const orderrouter = require('./Routers/orderRouter');
@@ -16,25 +18,44 @@ const supplierrouter = require('./Routers/supplierrouter');
 const stocktransactionrouter = require('./Routers/stocktransactionrouter');
 
 
-require("dotenv").config();
-const PORT = process.env.PORT || 3003;
+const PORT = process.env.PORT || 5000;
+const clientOrigins = (process.env.CLIENT_URLS || process.env.CLIENT_URL || "http://localhost:3000,https://advanced-inventory-management-system.vercel.app")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+const corsOptions = {
+  origin: clientOrigins,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true,
+};
+const jwtSecret = process.env.JWT_SECRET || process.env.SecretKey || "default_jwt_secret_key";
 
 const app = express();
 const server = http.createServer(app);
 
 const io = new Server(server, {
-  cors: {
-    origin: "https://advanced-inventory-management-system.vercel.app",
-    methods: ["GET", "POST","PUT","DELETE"],
-    credentials: true,
-  },
+  cors: corsOptions,
 });
 
-app.use(cors({
-  origin:"https://advanced-inventory-management-system.vercel.app",  
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true,
-}));
+io.use((socket, next) => {
+  const authorization = socket.handshake.headers.authorization;
+  const token = socket.handshake.auth?.token ||
+    (authorization?.startsWith("Bearer ") ? authorization.slice(7) : null);
+
+  if (!token) {
+    return next();
+  }
+
+  try {
+    socket.user = jwt.verify(token, jwtSecret);
+    return next();
+  } catch (error) {
+    return next(new Error("Socket authentication failed"));
+  }
+});
+
+app.use(cors(corsOptions));
 
 
 
@@ -50,8 +71,7 @@ io.on("connection", (socket) => {
 
 
 
-app.use(express.json({limit: "10mb"}));
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
 app.set("io", io);
 app.use(cookieParser());
 app.use('/api/auth', authrouter);
