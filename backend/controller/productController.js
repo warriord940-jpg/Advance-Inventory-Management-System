@@ -1,4 +1,6 @@
+const mongoose=require('mongoose')
 const Product=require('../models/Productmodel')
+const Category=require('../models/ Categorymodel')
 
 const logActivity=require('../libs/logger')
 
@@ -8,21 +10,46 @@ module.exports.Addproduct=async(req,res)=>{
 
     try {
 
-        const { name,   Desciption,Category, Price, quantity } = req.body;
-        
-   
-     
-        if (!name|| !Category || !  Desciption|| !Price || !quantity) {
-           console.warn("Product validation failed: required product fields are missing");
-           return res.status(400).json({ error: "Please provide all product details." });
+        const { name, Desciption, Category: categoryId, Price, quantity } = req.body;
+
+        const missingFields = ["name", "Desciption", "Category", "Price", "quantity"].filter(
+           (field) => req.body[field] === undefined || req.body[field] === null || req.body[field] === ""
+        );
+
+        if (missingFields.length > 0) {
+           const message = `Please provide all product details. Missing: ${missingFields.join(", ")}.`;
+           console.warn(`Product validation failed: ${message}`);
+           return res.status(400).json({ message, error: message });
         }
 
-     
+        if (!mongoose.Types.ObjectId.isValid(categoryId)) {
+           const message = "Category must be a valid category id.";
+           console.warn(`Product validation failed: ${message} Received: ${categoryId}`);
+           return res.status(400).json({ message, error: message });
+        }
+
+        const existingCategory = await Category.findById(categoryId);
+        if (!existingCategory) {
+           const message = "Selected category does not exist.";
+           console.warn(`Product validation failed: ${message} Received: ${categoryId}`);
+           return res.status(400).json({ message, error: message });
+        }
+
+        const price = Number(Price);
+        const productQuantity = Number(quantity);
+
+        if (Number.isNaN(price) || Number.isNaN(productQuantity)) {
+           const message = "Price and quantity must be numbers.";
+           console.warn(`Product validation failed: ${message}`);
+           return res.status(400).json({ message, error: message });
+        }
+
         const createdProduct = new Product({
-           name,Desciption, Category, Price, quantity,
+           name, Desciption, Category: categoryId, Price: price, quantity: productQuantity,
         });
 
         await createdProduct.save();
+        await createdProduct.populate("Category");
 
        await logActivity({
 
@@ -39,9 +66,14 @@ module.exports.Addproduct=async(req,res)=>{
         res.status(201).json(createdProduct);
      
      } catch (error) {
-        
+
         console.error("Error creating product:", error);
-        res.status(500).json({ message: "Error in creating product", error: error.message });
+
+        if (error.name === "ValidationError" || error.name === "CastError") {
+           return res.status(400).json({ message: error.message, error: error.message });
+        }
+
+        res.status(500).json({ message: error.message, error: error.message });
      }
     }  
 

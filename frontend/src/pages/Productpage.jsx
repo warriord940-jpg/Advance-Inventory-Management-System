@@ -79,8 +79,8 @@ function Productpage() {
         setSelectedProduct(null);
         resetForm();
       })
-      .catch(() => {
-        toast.error("Failed to update product");
+      .catch((error) => {
+        toast.error(error || "Failed to update product");
       });
   };
 
@@ -101,8 +101,8 @@ function Productpage() {
         toast.success("Product added successfully");
         resetForm();
       })
-      .catch(() => {
-        toast.error("Product add unsuccessful");
+      .catch((error) => {
+        toast.error(error || "Product add unsuccessful");
       });
   };
 
