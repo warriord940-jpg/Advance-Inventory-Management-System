@@ -268,20 +268,20 @@ function Productpage() {
         <div className="mt-10">
           <h2 className="text-xl font-semibold mb-4">Product List</h2>
           <div className="overflow-x-auto">
-            <table className="min-w-full bg-base-100 border mb-24 border-gray-200 rounded-lg shadow-md">
-              <thead className="">
+            <table className="min-w-full text-left border-collapse mb-24 border border-gray-200 rounded-lg shadow-md">
+              <thead className="bg-slate-800 text-white">
                 <tr>
-                  <th className="px-3 py-2 border w-5">#</th>
-                  <th className="px-3 py-2 border">Name</th>
-                  <th className="px-3 py-2 border">Category</th>
-                  <th className="px-3 py-2 border">Description</th>
-                  <th className="px-3 py-2 border">Quantity</th>
-                  <th className="px-3 py-2 border">Price</th>
-                  <th className="px-3 py-2 border">Date </th>
-                  <th className="px-3 py-2 w-72 border">Operations</th>
+                  <th className="px-3 py-2 border border-slate-700 w-5">#</th>
+                  <th className="px-3 py-2 border border-slate-700">Name</th>
+                  <th className="px-3 py-2 border border-slate-700">Category</th>
+                  <th className="px-3 py-2 border border-slate-700">Description</th>
+                  <th className="px-3 py-2 border border-slate-700">Quantity</th>
+                  <th className="px-3 py-2 border border-slate-700">Price</th>
+                  <th className="px-3 py-2 border border-slate-700">Date </th>
+                  <th className="px-3 py-2 border border-slate-700 w-72">Operations</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="bg-white text-gray-900">
                 {Array.isArray(displayProducts) &&
                 displayProducts.length > 0 ? (
                   displayProducts.map((product, index) => {
@@ -292,18 +292,18 @@ function Productpage() {
                     
                     return (
                       <tr key={product._id}>
-                        <td className="px-3 py-2 border">{index+1}</td>
-                        <td className="px-3 py-2 border">{product.name}</td>
-                        <td className="px-3 py-2 border">
+                        <td className="px-3 py-2 border border-gray-200">{index+1}</td>
+                        <td className="px-3 py-2 border border-gray-200">{product.name}</td>
+                        <td className="px-3 py-2 border border-gray-200">
                           {product.Category?.name || "No Category"}
                         </td>
-                        <td className="px-3 py-2 border">
+                        <td className="px-3 py-2 border border-gray-200">
                           {product.Desciption}
                         </td>
-                        <td className="px-3 py-2 border">{product.quantity}</td>
-                        <td className="px-3 py-2 border">${product.Price}</td>
-                        <td className="px-3 py-2 border"><FormattedTime timestamp={product?.createdAt} /></td>
-                        <td className="px-4 py-2 border">
+                        <td className="px-3 py-2 border border-gray-200">{product.quantity}</td>
+                        <td className="px-3 py-2 border border-gray-200">${product.Price}</td>
+                        <td className="px-3 py-2 border border-gray-200"><FormattedTime timestamp={product?.createdAt} /></td>
+                        <td className="px-4 py-2 border border-gray-200">
                           <button
                             onClick={() => handleremove(product._id)}
                             className="h-10 w-24 bg-red-500 hover:bg-red-700 rounded-md text-white"
