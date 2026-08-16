@@ -165,7 +165,7 @@ extraReducers:(builder)=>{
   })
   .addCase(Addproduct.fulfilled,(state,action)=>{
    state.isproductadd=false
-   state.getallproduct.push(action.payload);
+   state.getallproduct=[...(state.getallproduct || []), action.payload];
   
  
   })
