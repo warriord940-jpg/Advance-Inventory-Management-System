@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axiosInstance from "../lib/axios";
-import socket from "../lib/socket"; 
 import toast from "react-hot-toast";
 
 
